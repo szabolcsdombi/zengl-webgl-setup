@@ -14,7 +14,7 @@
 </head>
 <canvas id="canvas" width="1280" height="720"></canvas>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
-<script src="/webgl.js"></script>
+<script src="webgl.js"></script>
 <script>
   (async () => {
     const pyodide = await loadPyodide();
@@ -33,7 +33,7 @@
 
     setupWebGL(pyodide, gl);
 
-    const request = await fetch('/main.py');
+    const request = await fetch('main.py');
     pyodide.runPython(await request.text());
     const updateCallback = pyodide.globals.get('update');
 
