@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #canvas {
+      display: block;
+      width: calc(min(80vw, 1280px));
+      margin: auto;
+    }
+  </style>
+</head>
+<canvas id="canvas" width="1280" height="720"></canvas>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+<script src="/webgl.js"></script>
+<script>
+  (async () => {
+    const pyodide = await loadPyodide();
+
+    await pyodide.loadPackage([
+      'zengl-1.13.0-cp311-cp311-emscripten_3_1_32_wasm32.whl',
+      'webgl-0.1.0-cp311-cp311-emscripten_3_1_32_wasm32.whl',
+    ]);
+
+    const canvas = document.getElementById('canvas');
+    const gl = canvas.getContext('webgl2', {
+      alpha: false, depth: false, stencil: false, antialias: false,
+      premultipliedAlpha: false, preserveDrawingBuffer: false,
+      powerPreference: 'high-performance',
+    });
+
+    setupWebGL(pyodide, gl);
+
+    const request = await fetch('/main.py');
+    pyodide.runPython(await request.text());
+    const updateCallback = pyodide.globals.get('update');
+
+    const render = () => {
+      updateCallback();
+      requestAnimationFrame(render);
+    };
+
+    requestAnimationFrame(render);
+  })();
+</script>
+</html>
