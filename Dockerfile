@@ -1,10 +1,10 @@
-FROM python:3.11.2 AS base
-ENV EMSDK=/opt/emsdk EMSDK_NODE=/opt/emsdk/node/14.18.2_64bit/bin/node \
-    PATH=/opt/emsdk:/opt/emsdk/upstream/emscripten:/opt/emsdk/node/14.18.2_64bit/bin:$PATH
+FROM python:3.11.3
+ENV EMSDK=/opt/emsdk EMSDK_NODE=/opt/emsdk/node/16.20.0_64bit/bin/node \
+    PATH=/opt/emsdk:/opt/emsdk/upstream/emscripten:/opt/emsdk/node/16.20.0_64bit/bin:$PATH
 RUN git clone https://github.com/emscripten-core/emsdk.git $EMSDK &&\
-    emsdk install 3.1.32 && emsdk activate 3.1.32 && pip install pyodide-build==0.23.4
+    emsdk install 3.1.45 && emsdk activate 3.1.45 && pip install pyodide-build==0.24.1
 
-RUN git clone https://github.com/szabolcsdombi/zengl -b 1.13.0 /zengl
+RUN git clone https://github.com/szabolcsdombi/zengl -b 1.14.0 /zengl
 RUN pyodide build /zengl -o /web/
 
 COPY webgl /webgl
